@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro CV & Biodata Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen p-4 md:p-6 font-sans">
+
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- ইনপুট প্যানেল -->
+        <div class="lg:col-span-5 bg-gray-900 border border-gray-800 p-5 rounded-2xl shadow-xl space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-bold text-cyan-400">ডকুমেন্ট টাইপ সিলেক্ট করুন</h2>
+                <select id="docType" class="bg-gray-950 border border-gray-800 text-xs rounded-lg p-1.5 text-cyan-300" onchange="updateCV()">
+                    <option value="en_cv">English CV</option>
+                    <option value="bn_cv">বাংলা সিভি</option>
+                    <option value="biodata">জীবনবৃত্তান্ত (Biodata)</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="text-[11px] text-gray-400">পূর্ণ নাম / Full Name</label>
+                <input type="text" id="inputName" placeholder="যেমন: Emon Khan" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+            </div>
+
+            <div>
+                <label class="text-[11px] text-gray-400">পেশা বা পদবী / Job Title</label>
+                <input type="text" id="inputTitle" placeholder="যেমন: Software Developer" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="text-[11px] text-gray-400">ইমেইল / Email</label>
+                    <input type="email" id="inputEmail" placeholder="example@email.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+                </div>
+                <div>
+                    <label class="text-[11px] text-gray-400">ফোন / Phone</label>
+                    <input type="text" id="inputPhone" placeholder="+8801XXXXXXXXX" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-[11px] text-gray-400">ঠিকানা / Address</label>
+                <input type="text" id="inputAddress" placeholder="শহর, দেশ" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+            </div>
+
+            <div>
+                <label class="text-[11px] text-gray-400">দক্ষতা / Skills (কমা দিয়ে লিখুন)</label>
+                <input type="text" id="inputSkills" placeholder="Python, JavaScript, Git" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()">
+            </div>
+
+            <div>
+                <label class="text-[11px] text-gray-400">বিবরণ / Summary / Bio</label>
+                <textarea id="inputSummary" rows="2" placeholder="সংক্ষিপ্ত বিবরণ..." class="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white" oninput="updateCV()"></textarea>
+            </div>
+
+            <!-- থিম কালার কাস্টমাইজেশন -->
+            <div>
+                <label class="text-[11px] text-gray-400">থিম কালার (Theme Color)</label>
+                <input type="color" id="inputColor" value="#0284c7" class="w-full h-8 bg-transparent cursor-pointer rounded-lg" onchange="updateTheme()">
+            </div>
+
+            <button onclick="downloadPDF()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-gray-950 font-bold py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20">
+                📥 পিডিএফ (PDF) ডাউনলোড করুন
+            </button>
+        </div>
+
+        <!-- প্রিভিউ প্যানেল -->
+        <div class="lg:col-span-7 flex justify-center items-start">
+            <div id="cvPreview" class="w-full max-w-[595px] bg-white text-gray-900 p-8 rounded-xl shadow-2xl min-h-[750px] flex flex-col justify-between">
+                <div>
+                    <!-- হেডার -->
+                    <div id="cvHeader" class="border-b-2 pb-4 border-sky-600 flex justify-between items-start">
+                        <div>
+                            <h1 id="previewName" class="text-2xl font-bold uppercase tracking-wide">EMON KHAN</h1>
+                            <p id="previewTitle" class="text-sm font-semibold text-gray-600 mt-0.5">Software Developer</p>
+                        </div>
+                        <div class="text-right text-[11px] text-gray-600 space-y-0.5">
+                            <p id="previewEmail">email@domain.com</p>
+                            <p id="previewPhone">+8801XXXXXXXXX</p>
+                            <p id="previewAddress">Bangladesh</p>
+                        </div>
+                    </div>
+
+                    <!-- সেকশন ১ -->
+                    <div class="mt-5">
+                        <h3 id="headingMain" class="text-xs font-bold uppercase tracking-wider text-sky-700 border-b border-gray-200 pb-1 mb-1.5">Career Objective</h3>
+                        <p id="previewSummary" class="text-xs leading-relaxed text-gray-700">Professional summary description will appear here...</p>
+                    </div>
+
+                    <!-- সেকশন ২ -->
+                    <div class="mt-5">
+                        <h3 id="headingSub" class="text-xs font-bold uppercase tracking-wider text-sky-700 border-b border-gray-200 pb-1 mb-1.5">Skills</h3>
+                        <div id="previewSkills" class="flex flex-wrap gap-1.5 mt-2">
+                            <span class="bg-gray-100 px-2.5 py-0.5 rounded text-[11px] font-medium text-gray-800 border border-gray-200">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center text-[9px] text-gray-400 border-t pt-3">
+                    Professional Document Generator Studio
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function updateCV() {
+            const type = document.getElementById('docType').value;
+            
+            const name = document.getElementById('inputName').value || 'EMON KHAN';
+            const title = document.getElementById('inputTitle').value || 'Professional Title';
+            const email = document.getElementById('inputEmail').value || 'email@domain.com';
+            const phone = document.getElementById('inputPhone').value || '+8801XXXXXXXXX';
+            const address = document.getElementById('inputAddress').value || 'Bangladesh';
+            const summary = document.getElementById('inputSummary').value || 'Write your details here...';
+
+            document.getElementById('previewName').innerText = name;
+            document.getElementById('previewTitle').innerText = title;
+            document.getElementById('previewEmail').innerText = email;
+            document.getElementById('previewPhone').innerText = phone;
+            document.getElementById('previewAddress').innerText = address;
+            document.getElementById('previewSummary').innerText = summary;
+
+            // হেডার টেক্সট পরিবর্তন ডকুমেন্ট অনুযায়ী
+            if(type === 'bn_cv') {
+                document.getElementById('headingMain').innerText = "ক্যারিয়ার অবজেক্টিভ";
+                document.getElementById('headingSub').innerText = "দক্ষতা ও অভিজ্ঞতা";
+            } else if(type === 'biodata') {
+                document.getElementById('headingMain').innerText = "ব্যক্তিগত বিবরণী (Biodata)";
+                document.getElementById('headingSub').innerText = "অন্যান্য তথ্য";
+            } else {
+                document.getElementById('headingMain').innerText = "Career Objective";
+                document.getElementById('headingSub').innerText = "Technical Skills";
+            }
+
+            // স্কিলস ট্যাগ আপডেট
+            const skillsInput = document.getElementById('inputSkills').value;
+            const skillsContainer = document.getElementById('previewSkills');
+            skillsContainer.innerHTML = '';
+            
+            if(skillsInput) {
+                skillsInput.split(',').forEach(skill => {
+                    if(skill.trim() !== '') {
+                        const span = document.createElement('span');
+                        span.className = 'bg-gray-100 px-2.5 py-0.5 rounded text-[11px] font-medium text-gray-800 border border-gray-200';
+                        span.innerText = skill.trim();
+                        skillsContainer.appendChild(span);
+                    }
+                });
+            } else {
+                skillsContainer.innerHTML = '<span class="text-gray-400 text-xs">No skills added</span>';
+            }
+        }
+
+        function updateTheme() {
+            const color = document.getElementById('inputColor').value;
+            document.getElementById('cvHeader').style.borderColor = color;
+            document.getElementById('headingMain').style.color = color;
+            document.getElementById('headingSub').style.color = color;
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('cvPreview');
+            const options = {
+                margin:       10,
+                filename:     'document.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(element).set(options).save();
+        }
+    </script>
+</body>
+</html>
